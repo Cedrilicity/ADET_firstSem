@@ -1,1 +1,27 @@
-node_modules
+node_modules/
+dist/
+build/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.env
+.env.local
+.env.*.local
+.DS_Store
+.vscode/
+.idea/
+*.log
+logs/
+*.tsbuildinfo
+.nyc_output
+.cache
+.tmp
+.eslintcache
+.pnpm-store/
+# Optional: OS/editor files
+Thumbs.db
+
+# Sensitive files
+src/database/database.service.ts
