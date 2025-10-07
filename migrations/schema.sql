@@ -1,7 +1,3 @@
--- migrations/schema.sql
--- Creates the database (if missing) and the users table required by the app.
-
--- Replace `defaultdb` below with your desired database name if needed.
 CREATE DATABASE IF NOT EXISTS `defaultdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `defaultdb`;
 
@@ -14,5 +10,3 @@ CREATE TABLE IF NOT EXISTS `users` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX (`username`)
 );
-
--- Add additional CREATE TABLE statements here for other entities if needed.
