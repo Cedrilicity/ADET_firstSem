@@ -9,6 +9,19 @@ export class UsersService {
 
   private pool = () => this.db.getPool();
 
+  async createUser(user: {
+    username: string;
+    password: string;
+    role?: string;
+  }) {
+    const hashed = await bcrypt.hash(user.password, 10);
+    const [res] = await this.pool().execute<OkPacket>(
+      'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+      [user.username, hashed, user.role || 'user'],
+    );
+    return this.findById(res.insertId);
+  }
+
   async findByUsername(username: string) {
     const [rows] = await this.pool().execute<RowDataPacket[]>(
       'SELECT id, username, password, role, refresh_token FROM users WHERE username = ?',

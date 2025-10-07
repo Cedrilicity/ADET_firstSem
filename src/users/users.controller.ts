@@ -1,16 +1,16 @@
 import {
   Controller,
   Get,
-  Post,
   Put,
+  Post,
   Delete,
   Body,
   Param,
   UseGuards,
-  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('users')
 export class UsersController {
@@ -21,6 +21,13 @@ export class UsersController {
   @Get()
   async getAll() {
     return this.usersService.getAll();
+  }
+
+  // Post single user (protected)
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  async create(@Body() body: any) {
+    return this.usersService.createUser(body);
   }
 
   // Get single user by id (protected)
