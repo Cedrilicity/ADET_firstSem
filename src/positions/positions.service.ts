@@ -23,7 +23,7 @@ export class PositionsService {
 
   async findAll() {
     const [rows] = await this.pool().execute<RowDataPacket[]>(
-      'SELECT id, code, title, created_at FROM positions',
+      'SELECT id, code, title, created_at, user_id FROM positions',
     );
     return rows;
   }
