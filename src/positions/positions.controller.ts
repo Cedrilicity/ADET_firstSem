@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dto/create-position.dto';
@@ -18,10 +19,14 @@ export class PositionsController {
   constructor(private readonly positionsService: PositionsService) {}
 
   // Post single position (protected)
+  // Use Request to get user info from JWT token
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createPositionDto: CreatePositionDto) {
-    return this.positionsService.create(createPositionDto);
+  async create(@Body() createPositionDto: CreatePositionDto, @Req() req) {
+    // Variable user contains the decoded JWT payload
+    const user = req.user;
+    // Pass user.id to service to track who created the position
+    return this.positionsService.create(createPositionDto, user.id);
   }
 
   // Get all positions (protected)

@@ -1,3 +1,5 @@
+// Data Transfer Object for updating a position
+
 import { PartialType } from '@nestjs/mapped-types';
 import { CreatePositionDto } from './create-position.dto';
 import { IsString, IsNotEmpty } from 'class-validator';

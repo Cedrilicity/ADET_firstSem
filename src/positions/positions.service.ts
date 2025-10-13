@@ -10,11 +10,12 @@ export class PositionsService {
 
   private pool = () => this.db.getPool();
 
-  async create(createPositionDto: CreatePositionDto) {
+  // Include id to track who created the position
+  async create(createPositionDto: CreatePositionDto, id: number) {
     const { code, title } = createPositionDto;
     const [res] = await this.pool().execute<OkPacket>(
-      'INSERT INTO positions (code, title) VALUES (?, ?)',
-      [code, title],
+      'INSERT INTO positions (code, title, user_id) VALUES (?, ?, ?)',
+      [code, title, id],
     );
 
     return this.findOne(res.insertId);
@@ -27,15 +28,45 @@ export class PositionsService {
     return rows;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} positiobn`;
+  async findOne(id: number) {
+    const [rows] = await this.pool().execute<RowDataPacket[]>(
+      'SELECT id, code, title, created_at, user_id FROM positions WHERE id = ?',
+      [id],
+    );
+    return rows[0];
   }
 
-  update(id: number, updatePositionDto: UpdatePositionDto) {
-    return `This action updates a #${id} position`;
+  async update(id: number, updatePositionDto: UpdatePositionDto) {
+    const { code, title } = updatePositionDto;
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    if (code) {
+      fields.push('code = ?');
+      values.push(code);
+    }
+
+    if (title) {
+      fields.push('title = ?');
+      values.push(title);
+    }
+
+    if (fields.length === 0) return await this.findOne(id);
+
+    values.push(id);
+
+    const sql = `UPDATE positions SET ${fields.join(', ')} WHERE id = ?`;
+    await this.pool().execute(sql, values);
+
+    return this.findOne(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} position`;
+  async remove(id: number) {
+    const [res] = await this.pool().execute<OkPacket>(
+      'DELETE FROM positions WHERE id = ?',
+      [id],
+    );
+
+    return res.affectedRows > 0;
   }
 }
